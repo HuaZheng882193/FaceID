@@ -7,49 +7,63 @@ import { analyzeFace, compareFaces } from "./services/geminiService";
 const AnalysisReport: React.FC<{ text: string }> = ({ text }) => {
   // 解析分析文本，按段落和要点分割
   const parseAnalysis = (text: string) => {
-    const sections = text.split('\n').filter(line => line.trim());
+    const sections = text.split("\n").filter((line) => line.trim());
 
     return sections.map((section, index) => {
       // 检查是否是编号列表项
       const numberedMatch = section.match(/^(\d+)\.\s*(.+)/);
       if (numberedMatch) {
         return {
-          type: 'numbered',
+          type: "numbered",
           number: numberedMatch[1],
           content: numberedMatch[2],
-          key: `section-${index}`
+          key: `section-${index}`,
         };
       }
 
       // 检查是否包含关键词来分类
-      if (section.includes('特征点') || section.includes('瞳孔') || section.includes('鼻尖') || section.includes('嘴角')) {
+      if (
+        section.includes("特征点") ||
+        section.includes("瞳孔") ||
+        section.includes("鼻尖") ||
+        section.includes("嘴角")
+      ) {
         return {
-          type: 'features',
+          type: "features",
           content: section,
-          key: `section-${index}`
+          key: `section-${index}`,
         };
       }
 
-      if (section.includes('嵌入向量') || section.includes('面部指纹') || section.includes('数值化')) {
+      if (
+        section.includes("嵌入向量") ||
+        section.includes("面部指纹") ||
+        section.includes("数值化")
+      ) {
         return {
-          type: 'fingerprint',
+          type: "fingerprint",
           content: section,
-          key: `section-${index}`
+          key: `section-${index}`,
         };
       }
 
-      if (section.includes('光照') || section.includes('质量') || section.includes('拍摄') || section.includes('评价')) {
+      if (
+        section.includes("光照") ||
+        section.includes("质量") ||
+        section.includes("拍摄") ||
+        section.includes("评价")
+      ) {
         return {
-          type: 'quality',
+          type: "quality",
           content: section,
-          key: `section-${index}`
+          key: `section-${index}`,
         };
       }
 
       return {
-        type: 'general',
+        type: "general",
         content: section,
-        key: `section-${index}`
+        key: `section-${index}`,
       };
     });
   };
@@ -58,35 +72,82 @@ const AnalysisReport: React.FC<{ text: string }> = ({ text }) => {
 
   const getSectionIcon = (type: string) => {
     switch (type) {
-      case 'features':
+      case "features":
         return (
-          <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          <svg
+            className="w-5 h-5 text-blue-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
           </svg>
         );
-      case 'fingerprint':
+      case "fingerprint":
         return (
-          <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          <svg
+            className="w-5 h-5 text-green-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            />
           </svg>
         );
-      case 'quality':
+      case "quality":
         return (
-          <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          <svg
+            className="w-5 h-5 text-orange-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
           </svg>
         );
-      case 'numbered':
+      case "numbered":
         return (
           <div className="w-5 h-5 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-xs font-bold">
-            {sections.find(s => s.key === sections.find(s => s.type === 'numbered')?.key)?.number || '1'}
+            {sections.find(
+              (s) => s.key === sections.find((s) => s.type === "numbered")?.key
+            )?.number || "1"}
           </div>
         );
       default:
         return (
-          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-5 h-5 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         );
     }
@@ -94,14 +155,14 @@ const AnalysisReport: React.FC<{ text: string }> = ({ text }) => {
 
   const getSectionTitle = (type: string) => {
     switch (type) {
-      case 'features':
-        return '🔍 面部特征检测';
-      case 'fingerprint':
-        return '🧬 生物特征编码';
-      case 'quality':
-        return '⚡ 图像质量评估';
+      case "features":
+        return "🔍 面部特征检测";
+      case "fingerprint":
+        return "🧬 生物特征编码";
+      case "quality":
+        return "⚡ 图像质量评估";
       default:
-        return '📋 分析结果';
+        return "📋 分析结果";
     }
   };
 
@@ -115,7 +176,7 @@ const AnalysisReport: React.FC<{ text: string }> = ({ text }) => {
           <div className="flex items-start gap-3">
             {getSectionIcon(section.type)}
             <div className="flex-1">
-              {section.type !== 'general' && section.type !== 'numbered' && (
+              {section.type !== "general" && section.type !== "numbered" && (
                 <h4 className="font-semibold text-slate-800 mb-2 text-sm">
                   {getSectionTitle(section.type)}
                 </h4>
@@ -131,16 +192,19 @@ const AnalysisReport: React.FC<{ text: string }> = ({ text }) => {
       {/* AI分析提示 */}
       <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
         <div className="flex items-start gap-3">
-          <svg className="w-5 h-5 text-cyan-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-5 h-5 text-cyan-600 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <div>
-            <h4 className="font-semibold text-cyan-800 mb-1 text-sm">AI分析说明</h4>
-            <p className="text-xs text-cyan-700 leading-relaxed">
-              以上分析由Google Gemini AI模型生成，基于先进的计算机视觉算法识别面部特征点，
-              并通过深度学习技术转换为数字特征向量，用于人脸识别和验证。
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -318,12 +382,24 @@ const App: React.FC = () => {
                   ) : (
                     <div className="text-slate-400 flex flex-col items-center justify-center h-48 gap-4">
                       <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2">
-                        <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg
+                          className="w-8 h-8 text-slate-300"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
                         </svg>
                       </div>
                       <p className="text-center">请上传人脸图片进行AI分析</p>
-                      <p className="text-xs text-center text-slate-300">系统将自动识别面部特征并生成专业报告</p>
+                      <p className="text-xs text-center text-slate-300">
+                        系统将自动识别面部特征并生成专业报告
+                      </p>
                     </div>
                   )}
                 </div>
@@ -1033,7 +1109,8 @@ const App: React.FC = () => {
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }, (_, i) => {
                 const stepIndex = i;
-                const currentIndex = Object.values(LabStep).indexOf(currentStep);
+                const currentIndex =
+                  Object.values(LabStep).indexOf(currentStep);
                 const isCompleted = stepIndex < currentIndex;
                 const isCurrent = stepIndex === currentIndex;
 
@@ -1060,76 +1137,108 @@ const App: React.FC = () => {
       <div className="relative print:hidden">
         <div className="absolute inset-x-4 top-0 bottom-0 flex items-center justify-center pointer-events-none">
           <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg px-6 py-4 w-full max-w-4xl mx-auto pointer-events-auto">
-          <div className="flex items-center justify-center gap-6 md:gap-10">
-            {[
-              { key: LabStep.INTRO, name: "实验介绍", desc: "了解人脸识别原理" },
-              { key: LabStep.RECOGNIZE, name: "人脸识别", desc: "观察AI如何识别面部" },
-              { key: LabStep.REMEMBER, name: "人脸注册", desc: "注册面部信息" },
-              { key: LabStep.UNLOCK, name: "身份验证", desc: "验证身份安全性" },
-              { key: LabStep.REPORT, name: "实验报告", desc: "总结学习成果" },
-            ].map((step, i) => {
-              const stepIndex = Object.values(LabStep).indexOf(step.key);
-              const currentIndex = Object.values(LabStep).indexOf(currentStep);
-              const isCompleted = stepIndex < currentIndex;
-              const isCurrent = stepIndex === currentIndex;
+            <div className="flex items-center justify-center gap-6 md:gap-10">
+              {[
+                {
+                  key: LabStep.INTRO,
+                  name: "实验介绍",
+                  desc: "了解人脸识别原理",
+                },
+                {
+                  key: LabStep.RECOGNIZE,
+                  name: "人脸识别",
+                  desc: "观察AI如何识别面部",
+                },
+                {
+                  key: LabStep.REMEMBER,
+                  name: "人脸注册",
+                  desc: "注册面部信息",
+                },
+                {
+                  key: LabStep.UNLOCK,
+                  name: "身份验证",
+                  desc: "验证身份安全性",
+                },
+                { key: LabStep.REPORT, name: "实验报告", desc: "总结学习成果" },
+              ].map((step, i) => {
+                const stepIndex = Object.values(LabStep).indexOf(step.key);
+                const currentIndex =
+                  Object.values(LabStep).indexOf(currentStep);
+                const isCompleted = stepIndex < currentIndex;
+                const isCurrent = stepIndex === currentIndex;
 
-              return (
-                <div key={step.key} className="flex flex-col items-center max-w-20 md:max-w-24">
-                  {/* 步骤圆圈和连接线 */}
-                  <div className="flex items-center w-full">
-                    {/* 步骤圆圈 */}
-                    <div
-                      onClick={() => setCurrentStep(step.key)}
-                      className={`relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full border-2 transition-all duration-500 cursor-pointer hover:shadow-lg hover:scale-105 flex-shrink-0 ${
-                        isCompleted
-                          ? "bg-cyan-600 border-cyan-600 text-white shadow-lg hover:bg-cyan-700"
-                          : isCurrent
-                          ? "bg-white border-cyan-500 text-cyan-600 shadow-lg animate-pulse"
-                          : "bg-white border-slate-300 text-slate-400 hover:border-slate-400"
-                      }`}
-                    >
-                      {isCompleted ? (
-                        <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        <span className="text-lg md:text-xl font-bold" role="img" aria-label={`步骤 ${i + 1}`}>
-                          {['⓵', '⓶', '⓷', '⓸', '⓹'][i]}
-                        </span>
+                return (
+                  <div
+                    key={step.key}
+                    className="flex flex-col items-center max-w-20 md:max-w-24"
+                  >
+                    {/* 步骤圆圈和连接线 */}
+                    <div className="flex items-center w-full">
+                      {/* 步骤圆圈 */}
+                      <div
+                        onClick={() => setCurrentStep(step.key)}
+                        className={`relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full border-2 transition-all duration-500 cursor-pointer hover:shadow-lg hover:scale-105 flex-shrink-0 ${
+                          isCompleted
+                            ? "bg-cyan-600 border-cyan-600 text-white shadow-lg hover:bg-cyan-700"
+                            : isCurrent
+                            ? "bg-white border-cyan-500 text-cyan-600 shadow-lg animate-pulse"
+                            : "bg-white border-slate-300 text-slate-400 hover:border-slate-400"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <svg
+                            className="w-5 h-5 md:w-6 md:h-6"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <span
+                            className="text-lg md:text-xl font-bold"
+                            role="img"
+                            aria-label={`步骤 ${i + 1}`}
+                          >
+                            {["⓵", "⓶", "⓷", "⓸", "⓹"][i]}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 连接线 */}
+                      {i < 4 && (
+                        <div
+                          className={`flex-1 h-1.5 mx-3 md:mx-4 rounded-full transition-all duration-700 ${
+                            isCompleted ? "bg-cyan-600" : "bg-slate-200"
+                          }`}
+                        />
                       )}
                     </div>
 
-                    {/* 连接线 */}
-                    {i < 4 && (
+                    {/* 步骤信息 */}
+                    <div className="mt-4 text-center">
                       <div
-                        className={`flex-1 h-1.5 mx-3 md:mx-4 rounded-full transition-all duration-700 ${
-                          isCompleted ? "bg-cyan-600" : "bg-slate-200"
+                        className={`text-sm md:text-base font-semibold transition-all duration-300 leading-tight ${
+                          isCurrent
+                            ? "text-cyan-600"
+                            : isCompleted
+                            ? "text-slate-800"
+                            : "text-slate-400"
                         }`}
-                      />
-                    )}
-                  </div>
-
-                  {/* 步骤信息 */}
-                  <div className="mt-4 text-center">
-                    <div
-                      className={`text-sm md:text-base font-semibold transition-all duration-300 leading-tight ${
-                        isCurrent
-                          ? "text-cyan-600"
-                          : isCompleted
-                          ? "text-slate-800"
-                          : "text-slate-400"
-                      }`}
-                    >
-                      {step.name}
-                    </div>
-                    <div className="text-xs md:text-sm text-slate-600 mt-1 leading-tight max-w-20 md:max-w-24">
-                      {step.desc}
+                      >
+                        {step.name}
+                      </div>
+                      <div className="text-xs md:text-sm text-slate-600 mt-1 leading-tight max-w-20 md:max-w-24">
+                        {step.desc}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -1143,28 +1252,77 @@ const App: React.FC = () => {
             </div>
             <div className="flex-1">
               <h2 className="text-lg font-semibold text-slate-800">
-                {[
-                  { key: LabStep.INTRO, name: "实验介绍", desc: "了解人脸识别原理" },
-                  { key: LabStep.RECOGNIZE, name: "人脸识别", desc: "观察AI如何识别面部" },
-                  { key: LabStep.REMEMBER, name: "人脸注册", desc: "注册面部信息" },
-                  { key: LabStep.UNLOCK, name: "身份验证", desc: "验证身份安全性" },
-                  { key: LabStep.REPORT, name: "实验报告", desc: "总结学习成果" },
-                ].find(step => step.key === currentStep)?.name}
+                {
+                  [
+                    {
+                      key: LabStep.INTRO,
+                      name: "实验介绍",
+                      desc: "了解人脸识别原理",
+                    },
+                    {
+                      key: LabStep.RECOGNIZE,
+                      name: "人脸识别",
+                      desc: "观察AI如何识别面部",
+                    },
+                    {
+                      key: LabStep.REMEMBER,
+                      name: "人脸注册",
+                      desc: "注册面部信息",
+                    },
+                    {
+                      key: LabStep.UNLOCK,
+                      name: "身份验证",
+                      desc: "验证身份安全性",
+                    },
+                    {
+                      key: LabStep.REPORT,
+                      name: "实验报告",
+                      desc: "总结学习成果",
+                    },
+                  ].find((step) => step.key === currentStep)?.name
+                }
               </h2>
               <p className="text-sm text-slate-600 mt-1">
-                {[
-                  { key: LabStep.INTRO, name: "实验介绍", desc: "了解人脸识别原理" },
-                  { key: LabStep.RECOGNIZE, name: "人脸识别", desc: "观察AI如何识别面部" },
-                  { key: LabStep.REMEMBER, name: "人脸注册", desc: "注册面部信息" },
-                  { key: LabStep.UNLOCK, name: "身份验证", desc: "验证身份安全性" },
-                  { key: LabStep.REPORT, name: "实验报告", desc: "总结学习成果" },
-                ].find(step => step.key === currentStep)?.desc}
+                {
+                  [
+                    {
+                      key: LabStep.INTRO,
+                      name: "实验介绍",
+                      desc: "了解人脸识别原理",
+                    },
+                    {
+                      key: LabStep.RECOGNIZE,
+                      name: "人脸识别",
+                      desc: "观察AI如何识别面部",
+                    },
+                    {
+                      key: LabStep.REMEMBER,
+                      name: "人脸注册",
+                      desc: "注册面部信息",
+                    },
+                    {
+                      key: LabStep.UNLOCK,
+                      name: "身份验证",
+                      desc: "验证身份安全性",
+                    },
+                    {
+                      key: LabStep.REPORT,
+                      name: "实验报告",
+                      desc: "总结学习成果",
+                    },
+                  ].find((step) => step.key === currentStep)?.desc
+                }
               </p>
             </div>
             <div className="text-right text-sm text-slate-500">
-              <div>步骤 {Object.values(LabStep).indexOf(currentStep) + 1} / 5</div>
+              <div>
+                步骤 {Object.values(LabStep).indexOf(currentStep) + 1} / 5
+              </div>
               <div className="text-xs mt-1">
-                {Math.round(((Object.values(LabStep).indexOf(currentStep) + 1) / 5) * 100)}% 完成
+                {Math.round(
+                  ((Object.values(LabStep).indexOf(currentStep) + 1) / 5) * 100
+                )}
+                % 完成
               </div>
             </div>
           </div>
