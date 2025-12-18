@@ -11,11 +11,9 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     define: {
-      "process.env.API_KEY": JSON.stringify(
-        "AIzaSyBTRmInhNKbAelMC3PEk6W59jPLdbIaFcA"
-      ),
-      "process.env.GEMINI_API_KEY": JSON.stringify(
-        "AIzaSyBTRmInhNKbAelMC3PEk6W59jPLdbIaFcA"
+      // SiliconFlow API key (previously Gemini)
+      "process.env.SILICONFLOW_API_KEY": JSON.stringify(
+        "sk-caranifnmuxtvwlwfpmausnwwgpyshvouurxlxgupxykqidk"
       ),
     },
     resolve: {
